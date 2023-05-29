@@ -11,28 +11,33 @@ const Home = () => {
 
     const [ocrResult, setOcrResult] = useState("");
 
-    //Tesseract worker ref
-    const workerRef = useRef(null);
-
+    //Function to extract text from capture image
     const handleExtract = async () => {
+        //Disable button to avoid errors
         setBtnDisabled(true);
+
+        //Recognize image using Tesseract.recognize using Promise
         Tesseract.recognize(image, "eng", {
             logger: (m) => console.log(m),
         }).then(({ data: { text } }) => {
             console.log("OCR Result", text);
+            //After successful conversion assign result to ocrResult state
             setOcrResult(text);
+            //Enable button after successful conversion
             setBtnDisabled(false);
         });
     };
 
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+            {/* Render camera component */}
             <CameraComponent
                 image={image}
                 setImage={setImage}
                 onExtractImage={handleExtract}
                 btnDisabled={btnDisabled}
             />
+            {/* This will display the extracted text */}
             <div className="bg-blue-100">
                 <h1 className="text-center text-4xl font-bold p-4">Result</h1>
                 {ocrResult && (
